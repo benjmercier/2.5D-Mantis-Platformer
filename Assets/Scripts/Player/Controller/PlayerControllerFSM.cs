@@ -1,0 +1,151 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using Mantis.InputActions;
+using Mantis.Scripts.Player.States;
+using Mantis.Scripts.AnimationParameters;
+
+namespace Mantis.Scripts.Player.Controller
+{
+    public class PlayerControllerFSM : MonoBehaviour, PlayerInputActions.IPlayerActions
+    {
+        private BaseState _currentState;
+        public BaseState CurrentState { get { return _currentState; } }
+
+        public readonly IdlingState idlingState = new IdlingState();
+        public readonly MovingState movingState = new MovingState();
+        public readonly JumpingState jumpingState = new JumpingState();
+        public readonly DoubleJumpingState doubleJumpingState = new DoubleJumpingState();
+        public readonly FallJumpingState fallJumpingState = new FallJumpingState();
+        public readonly WallJumpingState wallJumpingState = new WallJumpingState();
+        public readonly FallingState fallingState = new FallingState();
+
+        [SerializeField]
+        private CharacterController _controller;
+        public CharacterController Controller { get { return _controller; } }
+
+        // Input
+        private Vector2 _moveInputContext;
+        private float _horizontalInput;
+        public float HorizontalInput { get { return _horizontalInput; } }
+
+        [Header("Gravity")]
+        public float groundedGravity = -5f;
+        public float fallingGravity = Physics.gravity.y; // -9.81f
+        [HideInInspector]
+        public float downwardForce;
+        public float downwardAcceleration = 5f;
+
+        [Header("Rotation")]
+        public Quaternion lookRotation;
+
+        [Header("Movement")]
+        [SerializeField]
+        private float _maxSpeed = 15f;
+        public float MaxSpeed { get { return _maxSpeed; } }
+        [SerializeField, Range(0f, 5f)]
+        private float _maxForce = 0.25f;
+        public float MaxForce { get { return _maxForce; } }
+
+        [HideInInspector]
+        public Vector3 targetDirection,
+            desiredVelocity,
+            steeringVelocity,
+            currentVelocity,
+            movement;
+
+        [HideInInspector]
+        public float previousXPos,
+            currentXPos,
+            lerpXPos;
+
+        [Header("Jumping")]
+        public float jumpHeight = 3.5f;
+        private bool _jumpInput = false;
+        public bool JumpInput { get { return _jumpInput; } set { _jumpInput = value; } }
+        [HideInInspector]
+        public float jumpVelocity;
+
+        [Header("Double Jumping")]
+        public float doubleJumpMagnitude = 0.5f;
+        [HideInInspector]
+        public float doubleJumpHeight;
+        public bool canDoubleJump = false;
+
+        [Header("Fall Jumping")]
+        public bool canFallJump = false;
+
+        [Header("Wall Jumping")]
+        public bool canWallJump = false;
+        [HideInInspector]
+        public Vector3 wallJumpVelocity;
+
+        [Header("Animations")]
+        [SerializeField]
+        private Animator _animator;
+        [SerializeField]
+        private PlayerAnimationParameters _animParameters;
+
+
+        private void Awake()
+        {
+            if (_controller == null)
+            {
+                if (TryGetComponent(out _controller))
+                {
+                    Debug.Log("Player::Awake()::_controller reference added.");
+                }
+                else
+                {
+                    Debug.LogError("Player::Awake()::_controller is NULL");
+                }
+            }
+        }
+
+        private void Start()
+        {
+            TransitionToState(idlingState);
+        }
+
+        private void Update()
+        {
+            _currentState.Update();
+            Debug.Log(_currentState);
+        }
+
+        public void TransitionToState(BaseState state)
+        {
+            if (_currentState != null)
+            {
+                _currentState.ExitState();
+            }
+
+            _currentState = state;
+
+            if (_currentState.Player == null)
+            {
+                _currentState.AssignPlayer(this);
+            }
+
+            _currentState.EnterState();
+        }
+
+        public void OnMove(InputAction.CallbackContext context)
+        {
+            _moveInputContext = context.ReadValue<Vector2>();
+            _horizontalInput = _moveInputContext.x;
+        }
+
+        public void OnJump(InputAction.CallbackContext context)
+        {
+            _jumpInput = context.ReadValue<float>() == 1;
+        }
+
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            _currentState.OnControllerColliderHit(hit);
+        }
+    }
+}
+
