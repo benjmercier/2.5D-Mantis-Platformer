@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mantis.Scripts.Player.Controller;
 
 namespace Mantis.Scripts.Checkers
 {
@@ -8,6 +9,7 @@ namespace Mantis.Scripts.Checkers
     {
         [SerializeField]
         private PlayerController_Old _player;
+        private PlayerControllerFSM _playerFSM;
 
         [SerializeField]
         private Vector3 _frontLedgeHandPos = new Vector3(0.03f, -1.75f, -1.5f);

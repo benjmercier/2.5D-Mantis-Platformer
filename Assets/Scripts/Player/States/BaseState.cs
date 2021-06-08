@@ -43,6 +43,12 @@ namespace Mantis.Scripts.Player.States
             }
         }
 
+        // Checks Ledge Grab for trigger
+        public virtual void OnTriggerEnter(Collider collider)
+        {
+            // have player register to event instead
+        }
+
         // Sets player look rotation
         protected virtual void SetPlayerRotation()
         {
@@ -58,6 +64,12 @@ namespace Mantis.Scripts.Player.States
         protected virtual bool PlayerIsGrounded()
         {
             return _player.Controller.isGrounded;
+        }
+
+        // Checks for movement input
+        protected virtual bool PlayerMoveInput()
+        {
+            return Mathf.Abs(_player.HorizontalInput) > 0f;
         }
 
         // Checks if the player's current pos equals previous pos

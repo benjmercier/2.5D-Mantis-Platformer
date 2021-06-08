@@ -6,12 +6,14 @@ namespace Mantis.Scripts.Player.States
     {
         public override void EnterState()
         {
+            _player.Animator.SetBool(_player.AnimParameters.isJumpingHash, true);
+
             SetWallJumpVelocity();
         }
 
         public override void ExitState()
         {
-            
+            _player.Animator.SetBool(_player.AnimParameters.isJumpingHash, false);
         }
 
         public override void Update()

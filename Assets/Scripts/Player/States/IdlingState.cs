@@ -6,12 +6,12 @@ namespace Mantis.Scripts.Player.States
     {
         public override void EnterState()
         {
-            
+            _player.Animator.SetBool(_player.AnimParameters.isIdlingHash, true);
         }
 
         public override void ExitState()
         {
-            
+            _player.Animator.SetBool(_player.AnimParameters.isIdlingHash, false);
         }
 
         public override void Update()
@@ -30,11 +30,6 @@ namespace Mantis.Scripts.Player.States
             {
                 _player.TransitionToState(_player.fallingState);
             }
-        }
-
-        private bool PlayerMoveInput()
-        {
-            return Mathf.Abs(_player.HorizontalInput) > 0f;
         }
     }
 }

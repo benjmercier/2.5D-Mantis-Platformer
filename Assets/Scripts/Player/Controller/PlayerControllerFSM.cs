@@ -20,10 +20,11 @@ namespace Mantis.Scripts.Player.Controller
         public readonly FallJumpingState fallJumpingState = new FallJumpingState();
         public readonly WallJumpingState wallJumpingState = new WallJumpingState();
         public readonly FallingState fallingState = new FallingState();
+        public readonly LedgeGrabbingState ledgeGrabbingState = new LedgeGrabbingState();
 
         [SerializeField]
         private CharacterController _controller;
-        public CharacterController Controller { get { return _controller; } }
+        public CharacterController Controller { get { return _controller; } set { _controller = value; } }
 
         // Input
         private Vector2 _moveInputContext;
@@ -81,12 +82,18 @@ namespace Mantis.Scripts.Player.Controller
         [HideInInspector]
         public Vector3 wallJumpVelocity;
 
+        [Header("Ledge Grab")]
+        public bool grabLedge = false;
+        public Vector3 frontLedgeHandPos = new Vector3(0.03f, -1.75f, -1.5f);
+        public Vector3 rearLedgeHandPos = new Vector3(-0.47f, -1.75f, -1.5f);
+
         [Header("Animations")]
         [SerializeField]
         private Animator _animator;
+        public Animator Animator { get { return _animator; } }
         [SerializeField]
         private PlayerAnimationParameters _animParameters;
-
+        public PlayerAnimationParameters AnimParameters { get { return _animParameters; } }
 
         private void Awake()
         {
@@ -101,6 +108,18 @@ namespace Mantis.Scripts.Player.Controller
                     Debug.LogError("Player::Awake()::_controller is NULL");
                 }
             }
+
+            _animParameters = new PlayerAnimationParameters();
+        }
+
+        private void OnEnable()
+        {
+            // register to ledge grab event
+        }
+
+        private void OnDisable()
+        {
+            // register to ledge grab event
         }
 
         private void Start()

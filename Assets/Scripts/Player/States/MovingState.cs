@@ -6,6 +6,8 @@ namespace Mantis.Scripts.Player.States
     {
         public override void EnterState()
         {
+            _player.Animator.SetBool(_player.AnimParameters.isMovingHash, true);
+
             _player.canDoubleJump = false;
 
             SetVelocityToMovement();
@@ -13,6 +15,8 @@ namespace Mantis.Scripts.Player.States
 
         public override void ExitState()
         {
+            _player.Animator.SetBool(_player.AnimParameters.isMovingHash, false);
+
             _player.canFallJump = true;
         }
 
@@ -43,7 +47,7 @@ namespace Mantis.Scripts.Player.States
 
         private void SetVelocityToMovement()
         {
-            _player.currentVelocity = _player.movement;
+            _player.currentVelocity =  _player.movement;
         }
 
         private void CalculateMovement()

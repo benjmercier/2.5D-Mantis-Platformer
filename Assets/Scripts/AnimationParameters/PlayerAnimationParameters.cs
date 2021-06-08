@@ -1,15 +1,32 @@
+using UnityEngine;
+
 namespace Mantis.Scripts.AnimationParameters
 {
     [System.Serializable]
     public class PlayerAnimationParameters
     {
-        public string speed;
-        public string isJumping;
-        public string isRolling;
-        public string yVelocity;
-        public string ledgeGrab;
-        public string climbUp;
-        public string onRope;
+        [SerializeField]
+        private string isIdling = "isIdling",
+            isMoving = "isMoving",
+            isJumping = "isJumping",
+            isDoubleJumping = "isDoubleJumping",
+            isFalling = "isFalling";
+
+        [HideInInspector]
+        public int isIdlingHash,
+            isMovingHash,
+            isJumpingHash,
+            isDoubleJumpingHash,
+            isFallingHash;
+
+        public PlayerAnimationParameters()
+        {
+            this.isIdlingHash = Animator.StringToHash(this.isIdling);
+            this.isMovingHash = Animator.StringToHash(this.isMoving);
+            this.isJumpingHash = Animator.StringToHash(this.isJumping);
+            this.isDoubleJumpingHash = Animator.StringToHash(this.isDoubleJumping);
+            this.isFallingHash = Animator.StringToHash(this.isFalling);
+        }
     }
 }
 

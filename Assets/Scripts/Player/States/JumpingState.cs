@@ -6,6 +6,8 @@ namespace Mantis.Scripts.Player.States
     {
         public override void EnterState()
         {
+            _player.Animator.SetBool(_player.AnimParameters.isJumpingHash, true);
+
             // jump input was reading true over multiple frames and immediately triggered double jump
             _player.JumpInput = false; 
 
@@ -17,7 +19,7 @@ namespace Mantis.Scripts.Player.States
 
         public override void ExitState()
         {
-            
+            _player.Animator.SetBool(_player.AnimParameters.isJumpingHash, false);
         }
 
         public override void Update()

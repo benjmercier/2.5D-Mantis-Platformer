@@ -8,19 +8,24 @@ namespace Mantis.Scripts.Player.States
 
         public override void EnterState()
         {
-            
+            _player.Animator.SetBool(_player.AnimParameters.isFallingHash, true);
         }
 
         public override void ExitState()
         {
-            
+            _player.Animator.SetBool(_player.AnimParameters.isFallingHash, false);
         }
 
         public override void Update()
         {
             CalculateFalling();
 
-            if (PlayerIsGrounded())
+            if (PlayerIsGrounded() && !PlayerMoveInput())
+            {
+                _player.TransitionToState(_player.idlingState);
+            }
+
+            if (PlayerIsGrounded() && PlayerMoveInput())
             {
                 _player.TransitionToState(_player.movingState);
             }
@@ -38,6 +43,11 @@ namespace Mantis.Scripts.Player.States
             if (_player.canWallJump && _player.JumpInput)
             {
                 _player.TransitionToState(_player.wallJumpingState);
+            }
+
+            if (_player.grabLedge)
+            {
+                _player.TransitionToState(_player.ledgeGrabbingState);
             }
         }
 
