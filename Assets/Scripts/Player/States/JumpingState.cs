@@ -40,6 +40,11 @@ namespace Mantis.Scripts.Player.States
             {
                 _player.TransitionToState(_player.fallingState);
             }
+
+            if (_player.grabLedge)
+            {
+                _player.TransitionToState(_player.ledgeGrabbingState);
+            }
         }
     }
 }

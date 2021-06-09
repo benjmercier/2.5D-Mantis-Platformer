@@ -10,14 +10,18 @@ namespace Mantis.Scripts.AnimationParameters
             isMoving = "isMoving",
             isJumping = "isJumping",
             isDoubleJumping = "isDoubleJumping",
-            isFalling = "isFalling";
+            isFalling = "isFalling",
+            isLedgeHanging = "isLedgeHanging",
+            isLedgeClimbing = "isLedgeClimbing";
 
         [HideInInspector]
         public int isIdlingHash,
             isMovingHash,
             isJumpingHash,
             isDoubleJumpingHash,
-            isFallingHash;
+            isFallingHash,
+            isLedgeHangingHash,
+            isLedgeClimbingHash;
 
         public PlayerAnimationParameters()
         {
@@ -26,6 +30,8 @@ namespace Mantis.Scripts.AnimationParameters
             this.isJumpingHash = Animator.StringToHash(this.isJumping);
             this.isDoubleJumpingHash = Animator.StringToHash(this.isDoubleJumping);
             this.isFallingHash = Animator.StringToHash(this.isFalling);
+            this.isLedgeHangingHash = Animator.StringToHash(this.isLedgeHanging);
+            this.isLedgeClimbingHash = Animator.StringToHash(this.isLedgeClimbing);
         }
     }
 }

@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Mantis.InputActions;
 using Mantis.Scripts.Player.States;
+using Mantis.Scripts.AnimationBehaviors;
 using Mantis.Scripts.AnimationParameters;
+using Mantis.Scripts.Checkers;
 
 namespace Mantis.Scripts.Player.Controller
 {
@@ -21,6 +21,7 @@ namespace Mantis.Scripts.Player.Controller
         public readonly WallJumpingState wallJumpingState = new WallJumpingState();
         public readonly FallingState fallingState = new FallingState();
         public readonly LedgeGrabbingState ledgeGrabbingState = new LedgeGrabbingState();
+        public readonly LedgeClimbingState ledgeClimbingState = new LedgeClimbingState();
 
         [SerializeField]
         private CharacterController _controller;
@@ -30,6 +31,10 @@ namespace Mantis.Scripts.Player.Controller
         private Vector2 _moveInputContext;
         private float _horizontalInput;
         public float HorizontalInput { get { return _horizontalInput; } }
+        private bool _jumpInput = false;
+        public bool JumpInput { get { return _jumpInput; } set { _jumpInput = value; } }
+        private bool _interactionInput;
+        public bool InteractionInput { get { return _interactionInput; } }
 
         [Header("Gravity")]
         public float groundedGravity = -5f;
@@ -63,8 +68,6 @@ namespace Mantis.Scripts.Player.Controller
 
         [Header("Jumping")]
         public float jumpHeight = 3.5f;
-        private bool _jumpInput = false;
-        public bool JumpInput { get { return _jumpInput; } set { _jumpInput = value; } }
         [HideInInspector]
         public float jumpVelocity;
 
@@ -84,8 +87,12 @@ namespace Mantis.Scripts.Player.Controller
 
         [Header("Ledge Grab")]
         public bool grabLedge = false;
+        public int ledgeGrabID; // 0 = front, 1 = rear
+        public Transform ledgeParent;
         public Vector3 frontLedgeHandPos = new Vector3(0.03f, -1.75f, -1.5f);
         public Vector3 rearLedgeHandPos = new Vector3(-0.47f, -1.75f, -1.5f);
+        public bool canClimbLedge = false;
+        public bool ledgeClimbCompleted = false;
 
         [Header("Animations")]
         [SerializeField]
@@ -115,11 +122,15 @@ namespace Mantis.Scripts.Player.Controller
         private void OnEnable()
         {
             // register to ledge grab event
+            LedgeGrabCheckerFSM.onLedgeCollision += CanGrabLedge;
+            LedgeClimbingBehavior.onLedgeClimbCompleted += LedgeClimbCompleted;
         }
 
         private void OnDisable()
         {
-            // register to ledge grab event
+            // deregister from ledge grab event
+            LedgeGrabCheckerFSM.onLedgeCollision -= CanGrabLedge;
+            LedgeClimbingBehavior.onLedgeClimbCompleted -= LedgeClimbCompleted;
         }
 
         private void Start()
@@ -159,6 +170,23 @@ namespace Mantis.Scripts.Player.Controller
         public void OnJump(InputAction.CallbackContext context)
         {
             _jumpInput = context.ReadValue<float>() == 1;
+        }
+
+        public void OnInteraction(InputAction.CallbackContext context)
+        {
+            _interactionInput = context.ReadValue<float>() == 1;
+        }
+
+        private void CanGrabLedge(bool enableLedgeGrab, int ledgeID, Transform ledgeTransform)
+        {
+            grabLedge = enableLedgeGrab;
+            ledgeGrabID = ledgeID;
+            ledgeParent = ledgeTransform;
+        }
+
+        private void LedgeClimbCompleted(bool climbCompleted)
+        {
+            ledgeClimbCompleted = climbCompleted;
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)

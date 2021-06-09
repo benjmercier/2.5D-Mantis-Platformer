@@ -150,6 +150,21 @@ namespace Mantis.Scripts.Player.States
         {
             return velocity < 0;
         }
+
+        // Enable/Disable player controller
+        protected virtual void TogglePlayerController(bool isEnabled)
+        {
+            _player.Controller.enabled = isEnabled;
+        }
+
+        // Set player controller on ground
+        protected virtual void SetPlayerControllerOnGround(float x, float y)
+        {
+            while (!_player.Controller.isGrounded)
+            {
+                PerformMovement(x, y, true);
+            }
+        }
     }
 }
 
