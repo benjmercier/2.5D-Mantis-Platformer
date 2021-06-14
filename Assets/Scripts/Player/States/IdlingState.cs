@@ -16,6 +16,12 @@ namespace Mantis.Scripts.Player.States
 
         public override void Update()
         {
+            // Lerp player x pos to stationary
+            if (Mathf.Abs(_player.movement.x - 0f) > 0.1f)
+            {
+                _player.movement.x = LerpXPos();
+            }
+
             if (PlayerIsGrounded() && PlayerMoveInput())
             {
                 _player.TransitionToState(_player.movingState);
@@ -30,6 +36,11 @@ namespace Mantis.Scripts.Player.States
             {
                 _player.TransitionToState(_player.fallingState);
             }
+        }
+
+        private float LerpXPos()
+        {
+            return Mathf.Lerp(_player.movement.x, 0f, _player.downwardAcceleration * Time.deltaTime);
         }
     }
 }

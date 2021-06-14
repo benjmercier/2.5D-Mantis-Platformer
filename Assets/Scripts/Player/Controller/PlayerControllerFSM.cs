@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Mantis.InputActions;
@@ -22,6 +23,7 @@ namespace Mantis.Scripts.Player.Controller
         public readonly FallingState fallingState = new FallingState();
         public readonly LedgeGrabbingState ledgeGrabbingState = new LedgeGrabbingState();
         public readonly LedgeClimbingState ledgeClimbingState = new LedgeClimbingState();
+        public readonly RopeSwingingState ropeSwingingState = new RopeSwingingState();
 
         [SerializeField]
         private CharacterController _controller;
@@ -54,7 +56,7 @@ namespace Mantis.Scripts.Player.Controller
         private float _maxForce = 0.25f;
         public float MaxForce { get { return _maxForce; } }
 
-        [HideInInspector]
+        //[HideInInspector]
         public Vector3 targetDirection,
             desiredVelocity,
             steeringVelocity,
@@ -63,13 +65,18 @@ namespace Mantis.Scripts.Player.Controller
 
         [HideInInspector]
         public float previousXPos,
+            previousYPos,
             currentXPos,
-            lerpXPos;
+            currentYPos,
+            lerpXPos,
+            lerpYPos;
 
         [Header("Jumping")]
         public float jumpHeight = 3.5f;
         [HideInInspector]
         public float jumpVelocity;
+        public bool isHorizontalStopped = false;
+        public bool isVerticalStopped = false;
 
         [Header("Double Jumping")]
         public float doubleJumpMagnitude = 0.5f;
@@ -94,6 +101,15 @@ namespace Mantis.Scripts.Player.Controller
         public bool canClimbLedge = false;
         public bool ledgeClimbCompleted = false;
 
+        [Header("Rope Swing")]
+        public bool isAttachedToRope = false;
+        public Rigidbody ropeGrabRB;
+        public GameObject attachedRopeSegment;
+        public float swingForce = 35f;
+        public Quaternion swingRotation;
+        public Vector3 swingVector;
+        public Quaternion playerRotation;
+
         [Header("Animations")]
         [SerializeField]
         private Animator _animator;
@@ -101,6 +117,8 @@ namespace Mantis.Scripts.Player.Controller
         [SerializeField]
         private PlayerAnimationParameters _animParameters;
         public PlayerAnimationParameters AnimParameters { get { return _animParameters; } }
+
+        public static event Action onDetachFromRope;
 
         private void Awake()
         {
@@ -123,25 +141,33 @@ namespace Mantis.Scripts.Player.Controller
         {
             // register to ledge grab event
             LedgeGrabCheckerFSM.onLedgeCollision += CanGrabLedge;
+            // register to ledge climb exit state
             LedgeClimbingBehavior.onLedgeClimbCompleted += LedgeClimbCompleted;
+            // register to rope grab event
+            RopeGrabCheckerFSM.onAttachToRope += AttachedToRope;
         }
 
         private void OnDisable()
         {
             // deregister from ledge grab event
             LedgeGrabCheckerFSM.onLedgeCollision -= CanGrabLedge;
+            // deregister to ledge climb exit state
             LedgeClimbingBehavior.onLedgeClimbCompleted -= LedgeClimbCompleted;
+            // deregister to rope grab event
+            RopeGrabCheckerFSM.onAttachToRope -= AttachedToRope;
         }
 
         private void Start()
         {
             TransitionToState(idlingState);
+
+            playerRotation = transform.rotation;
         }
 
         private void Update()
         {
             _currentState.Update();
-            Debug.Log(_currentState);
+            //Debug.Log(_currentState);
         }
 
         public void TransitionToState(BaseState state)
@@ -187,6 +213,20 @@ namespace Mantis.Scripts.Player.Controller
         private void LedgeClimbCompleted(bool climbCompleted)
         {
             ledgeClimbCompleted = climbCompleted;
+        }
+
+        private void AttachedToRope(Rigidbody ropeRB, GameObject attachedSegment)
+        {
+            isAttachedToRope = true;
+            ropeGrabRB = ropeRB;
+            attachedRopeSegment = attachedSegment;
+        }
+
+        public void OnDetachFromRope()
+        {
+            isAttachedToRope = false;
+
+            onDetachFromRope?.Invoke();
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)

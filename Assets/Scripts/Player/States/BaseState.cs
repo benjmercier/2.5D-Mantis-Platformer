@@ -53,8 +53,9 @@ namespace Mantis.Scripts.Player.States
         protected virtual void SetPlayerRotation()
         {
             _player.lookRotation = _player.transform.localRotation;
+           
             _player.lookRotation.SetLookRotation(_player.movement);
-
+            
             _player.transform.localRotation = _player.lookRotation;
 
             _player.transform.rotation = Quaternion.Euler(0f, _player.transform.eulerAngles.y, 0f);
@@ -89,6 +90,12 @@ namespace Mantis.Scripts.Player.States
         protected virtual float ReturnPlayerXPos()
         {
             return _player.transform.position.x;
+        }
+
+        // Returns the player's current y pos
+        protected virtual float ReturnPlayerYPos()
+        {
+            return _player.transform.position.y;
         }
 
         // Moves the controller if not jumping
@@ -143,6 +150,29 @@ namespace Mantis.Scripts.Player.States
             jumpHeight = _player.jumpHeight * _player.doubleJumpMagnitude;
 
             return Mathf.Sqrt(jumpHeight * -2 * _player.fallingGravity);
+        }
+
+        // Checks if stopped vertically while jumping
+        protected virtual void CalculateJumpWithStop()
+        {
+            _player.previousYPos = ReturnPlayerYPos();
+
+            PerformMovement(_player.movement.x, SetVerticalMovement());
+
+            _player.currentYPos = ReturnPlayerYPos();
+
+            if (_player.currentYPos == _player.previousYPos)
+            {
+                _player.isVerticalStopped = true;
+            }
+        }
+
+        // Applies gravity to jump velocity
+        protected virtual float SetVerticalMovement()
+        {
+            _player.jumpVelocity += _player.fallingGravity * Time.deltaTime;
+
+            return _player.jumpVelocity;
         }
 
         // Checks if the player's y velocity is < 0 (falling)

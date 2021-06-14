@@ -4,8 +4,6 @@ namespace Mantis.Scripts.Player.States
 {
     public class FallingState : BaseState
     {
-        private bool _isStopped = false;
-
         public override void EnterState()
         {
             _player.Animator.SetBool(_player.AnimParameters.isFallingHash, true);
@@ -14,6 +12,8 @@ namespace Mantis.Scripts.Player.States
         public override void ExitState()
         {
             _player.Animator.SetBool(_player.AnimParameters.isFallingHash, false);
+
+            _player.isHorizontalStopped = false;
         }
 
         public override void Update()
@@ -49,22 +49,28 @@ namespace Mantis.Scripts.Player.States
             {
                 _player.TransitionToState(_player.ledgeGrabbingState);
             }
+
+            if (_player.isAttachedToRope)
+            {
+                _player.TransitionToState(_player.ropeSwingingState);
+            }
         }
 
         private void CalculateFalling()
         {
             _player.previousXPos = ReturnPlayerXPos();
 
-            PerformMovement(SetXMovementPos(), _player.movement.y, false);
+            PerformMovement(SetHorizontalMovement(), _player.movement.y, false);
 
             _player.currentXPos = ReturnPlayerXPos();
 
-            _isStopped = !PlayerIsMoving(false);
+            // Stops movement if wall hit
+            _player.isHorizontalStopped = !PlayerIsMoving(false);
         }
 
-        private float SetXMovementPos()
+        private float SetHorizontalMovement()
         {
-            if (!_isStopped)
+            if (!_player.isHorizontalStopped)
             {
                 _player.lerpXPos = _player.movement.x;
             }
