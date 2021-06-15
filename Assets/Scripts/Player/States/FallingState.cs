@@ -1,4 +1,5 @@
 using UnityEngine;
+using Mantis.Scripts.Managers;
 
 namespace Mantis.Scripts.Player.States
 {
@@ -14,6 +15,8 @@ namespace Mantis.Scripts.Player.States
             _player.Animator.SetBool(_player.AnimParameters.isFallingHash, false);
 
             _player.isHorizontalStopped = false;
+
+            UIManager.Instance.ActivateNotification(_player.canWallJump, UIManager.Instance.WallJumpTxt);
         }
 
         public override void Update()
@@ -40,6 +43,8 @@ namespace Mantis.Scripts.Player.States
                 _player.TransitionToState(_player.fallJumpingState);
             }
 
+            UIManager.Instance.ActivateNotification(_player.canWallJump, UIManager.Instance.WallJumpTxt);
+
             if (_player.canWallJump && _player.JumpInput)
             {
                 _player.TransitionToState(_player.wallJumpingState);
@@ -53,6 +58,13 @@ namespace Mantis.Scripts.Player.States
             if (_player.isAttachedToRope)
             {
                 _player.TransitionToState(_player.ropeSwingingState);
+            }
+
+            if (_player.IsBelowMinPos())
+            {
+                ResetPlayerPosition();
+
+                _player.TransitionToState(_player.idlingState);
             }
         }
 
@@ -85,6 +97,13 @@ namespace Mantis.Scripts.Player.States
         private float LerpXPos()
         {
             return Mathf.Lerp(_player.movement.x, 0f, _player.downwardAcceleration * Time.deltaTime);
+        }
+
+        private void ResetPlayerPosition()
+        {
+            _player.movement = Vector3.zero;
+            _player.transform.rotation = _player.playerRotation;
+            _player.MoveToStartPos();
         }
     }
 }

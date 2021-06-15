@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Mantis.Scripts.Managers;
 
 namespace Mantis.Scripts.Player.States
 {
@@ -19,6 +18,8 @@ namespace Mantis.Scripts.Player.States
             _player.transform.parent = _player.attachedRopeSegment.transform;
 
             _canDetach = true;
+
+            UIManager.Instance.ActivateNotification(true, UIManager.Instance.RopeSwingTxt);
         }
 
         public override void ExitState()
@@ -32,6 +33,8 @@ namespace Mantis.Scripts.Player.States
             _player.transform.rotation = _player.playerRotation;
 
             SetPlayerRotation();
+
+            UIManager.Instance.ActivateNotification(false, UIManager.Instance.RopeSwingTxt);
         }
 
         public override void Update()
@@ -39,7 +42,7 @@ namespace Mantis.Scripts.Player.States
             CalculateRopeSwing();
             //SetPlayerPosAndRot();
             
-            if (_player.InteractionInput && _canDetach)
+            if (_player.JumpInput && _canDetach)
             {
                 _canDetach = false;
 

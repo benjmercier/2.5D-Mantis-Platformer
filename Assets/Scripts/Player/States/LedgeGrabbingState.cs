@@ -1,4 +1,5 @@
 using UnityEngine;
+using Mantis.Scripts.Managers;
 
 namespace Mantis.Scripts.Player.States
 {
@@ -13,6 +14,8 @@ namespace Mantis.Scripts.Player.States
             SetPlayerPosOnLedge();
             _player.grabLedge = false;
             _player.canClimbLedge = true;
+
+            UIManager.Instance.ActivateNotification(true, UIManager.Instance.LedgeGrabTxt);
         }
 
         public override void ExitState()
@@ -20,6 +23,8 @@ namespace Mantis.Scripts.Player.States
             _player.Animator.SetBool(_player.AnimParameters.isLedgeHangingHash, false);
 
             _player.canClimbLedge = false;
+
+            UIManager.Instance.ActivateNotification(false, UIManager.Instance.LedgeGrabTxt);
         }
 
         public override void Update()

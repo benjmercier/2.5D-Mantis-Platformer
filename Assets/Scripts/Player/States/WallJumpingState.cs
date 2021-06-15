@@ -32,6 +32,11 @@ namespace Mantis.Scripts.Player.States
                 SetWallJumpVelocity();
             }
 
+            if (_player.grabLedge)
+            {
+                _player.TransitionToState(_player.ledgeGrabbingState);
+            }
+
             if (PlayerIsFalling(_player.jumpVelocity) || _player.isVerticalStopped)
             {
                 _player.TransitionToState(_player.fallingState);

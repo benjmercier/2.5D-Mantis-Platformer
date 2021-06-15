@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mantis.Scripts.Player.Controller;
 
@@ -26,17 +25,9 @@ namespace Mantis.Scripts.Checkers
 
         private WaitForSeconds _detachFromWait = new WaitForSeconds(1.5f);
 
+        private Vector3 _defaultLocalPos;
+
         public static event Action<Rigidbody, GameObject> onAttachToRope;
-
-        private void OnEnable()
-        {
-            PlayerControllerFSM.onDetachFromRope += DetachFromRope;
-        }
-
-        private void OnDisable()
-        {
-            PlayerControllerFSM.onDetachFromRope -= DetachFromRope;
-        }
 
         private void Start()
         {
@@ -49,6 +40,20 @@ namespace Mantis.Scripts.Checkers
             {
                 TryGetComponent(out _ropeGrabHJ);
             }
+
+            _defaultLocalPos = transform.localPosition;
+        }
+
+        private void OnEnable()
+        {
+            PlayerControllerFSM.onDetachFromRope += DetachFromRope;
+            PlayerControllerFSM.onDetachFromRope += ResetPosition;
+        }
+
+        private void OnDisable()
+        {
+            PlayerControllerFSM.onDetachFromRope -= DetachFromRope;
+            PlayerControllerFSM.onDetachFromRope -= ResetPosition;
         }
 
         private void Update()
@@ -93,6 +98,11 @@ namespace Mantis.Scripts.Checkers
             yield return _detachFromWait;
 
             _detachFromObj = null;
+        }
+
+        private void ResetPosition()
+        {
+            transform.localPosition = _defaultLocalPos;
         }
 
         private void OnTriggerEnter(Collider other)

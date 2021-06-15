@@ -6,6 +6,7 @@ using Mantis.Scripts.Player.States;
 using Mantis.Scripts.AnimationBehaviors;
 using Mantis.Scripts.AnimationParameters;
 using Mantis.Scripts.Checkers;
+using Mantis.Scripts.Managers;
 
 namespace Mantis.Scripts.Player.Controller
 {
@@ -159,6 +160,8 @@ namespace Mantis.Scripts.Player.Controller
 
         private void Start()
         {
+            MoveToStartPos();
+
             TransitionToState(idlingState);
 
             playerRotation = transform.rotation;
@@ -168,6 +171,11 @@ namespace Mantis.Scripts.Player.Controller
         {
             _currentState.Update();
             //Debug.Log(_currentState);
+        }
+
+        public void MoveToStartPos()
+        {
+            transform.position = GameManager.Instance.StartPos.position;
         }
 
         public void TransitionToState(BaseState state)
@@ -227,6 +235,11 @@ namespace Mantis.Scripts.Player.Controller
             isAttachedToRope = false;
 
             onDetachFromRope?.Invoke();
+        }
+
+        public bool IsBelowMinPos()
+        {
+            return transform.position.y < GameManager.Instance.MinPos;
         }
 
         private void OnControllerColliderHit(ControllerColliderHit hit)

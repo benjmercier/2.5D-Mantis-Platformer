@@ -1,4 +1,5 @@
 using UnityEngine;
+using Mantis.Scripts.Managers;
 
 namespace Mantis.Scripts.Player.States
 {
@@ -22,6 +23,8 @@ namespace Mantis.Scripts.Player.States
         public override void ExitState()
         {
             _player.Animator.SetBool(_player.AnimParameters.isJumpingHash, false);
+
+            UIManager.Instance.ActivateNotification(_player.canWallJump, UIManager.Instance.WallJumpTxt);
         }
 
         public override void Update()
@@ -32,6 +35,8 @@ namespace Mantis.Scripts.Player.States
             {
                 _player.TransitionToState(_player.doubleJumpingState);
             }
+            
+            UIManager.Instance.ActivateNotification(_player.canWallJump, UIManager.Instance.WallJumpTxt);
 
             if (_player.canWallJump && _player.JumpInput)
             {
