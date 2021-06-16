@@ -47,7 +47,7 @@ namespace Mantis.Scripts.Player.States
 
         private void SetVelocityToMovement()
         {
-            _player.currentVelocity =  _player.movement;
+            _player.currentVelocity = _player.movement;
         }
 
         private void CalculateMovement()

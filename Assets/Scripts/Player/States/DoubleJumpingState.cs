@@ -6,6 +6,11 @@ namespace Mantis.Scripts.Player.States
     {
         public override void EnterState()
         {
+            if (PlayerIsMoving(false))
+            {
+                //SetPlayerRotation();
+            }
+
             _player.Animator.SetBool(_player.AnimParameters.isDoubleJumpingHash, true);
 
             _player.jumpVelocity = SetJumpVelocity(_player.doubleJumpHeight);
@@ -25,6 +30,16 @@ namespace Mantis.Scripts.Player.States
             if (PlayerIsFalling(_player.jumpVelocity))
             {
                 _player.TransitionToState(_player.fallingState);
+            }
+
+            if (_player.grabLedge)
+            {
+                _player.TransitionToState(_player.ledgeGrabbingState);
+            }
+
+            if (_player.isAttachedToRope)
+            {
+                _player.TransitionToState(_player.ropeSwingingState);
             }
         }
     }

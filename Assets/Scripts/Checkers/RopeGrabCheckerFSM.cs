@@ -1,6 +1,10 @@
 using System;
 using System.Collections;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+using System.Collections.Generic;
+>>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
 =======
 using System.Collections.Generic;
 >>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
@@ -30,11 +34,14 @@ namespace Mantis.Scripts.Checkers
         private WaitForSeconds _detachFromWait = new WaitForSeconds(1.5f);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         private Vector3 _defaultLocalPos;
 
         public static event Action<Rigidbody, GameObject> onAttachToRope;
 
 =======
+=======
+>>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
         public static event Action<Rigidbody, GameObject> onAttachToRope;
 
         private void OnEnable()
@@ -47,6 +54,9 @@ namespace Mantis.Scripts.Checkers
             PlayerControllerFSM.onDetachFromRope -= DetachFromRope;
         }
 
+<<<<<<< HEAD
+>>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
+=======
 >>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
         private void Start()
         {
@@ -59,6 +69,7 @@ namespace Mantis.Scripts.Checkers
             {
                 TryGetComponent(out _ropeGrabHJ);
             }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
             _defaultLocalPos = transform.localPosition;
@@ -74,6 +85,8 @@ namespace Mantis.Scripts.Checkers
         {
             PlayerControllerFSM.onDetachFromRope -= DetachFromRope;
             PlayerControllerFSM.onDetachFromRope -= ResetPosition;
+=======
+>>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
 =======
 >>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
         }
@@ -123,11 +136,14 @@ namespace Mantis.Scripts.Checkers
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         private void ResetPosition()
         {
             transform.localPosition = _defaultLocalPos;
         }
 
+=======
+>>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
 =======
 >>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
         private void OnTriggerEnter(Collider other)

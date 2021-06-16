@@ -6,6 +6,8 @@ namespace Mantis.Scripts.Player.States
     {
         public override void EnterState()
         {
+            _player.isVerticalStopped = false;
+
             _player.Animator.SetBool(_player.AnimParameters.isJumpingHash, true);
 
             // jump input was reading true over multiple frames and immediately triggered double jump
@@ -24,7 +26,7 @@ namespace Mantis.Scripts.Player.States
 
         public override void Update()
         {
-            CalculateJump();
+            CalculateJumpWithStop();
 
             if (_player.canDoubleJump && _player.JumpInput)
             {
@@ -36,9 +38,19 @@ namespace Mantis.Scripts.Player.States
                 _player.TransitionToState(_player.wallJumpingState);
             }
 
-            if (PlayerIsFalling(_player.jumpVelocity))
+            if (PlayerIsFalling(_player.jumpVelocity) || _player.isVerticalStopped)
             {
                 _player.TransitionToState(_player.fallingState);
+            }
+
+            if (_player.grabLedge)
+            {
+                _player.TransitionToState(_player.ledgeGrabbingState);
+            }
+
+            if (_player.isAttachedToRope)
+            {
+                _player.TransitionToState(_player.ropeSwingingState);
             }
         }
     }

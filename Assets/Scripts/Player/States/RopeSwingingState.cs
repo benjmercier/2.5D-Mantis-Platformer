@@ -1,6 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 using UnityEngine;
 using Mantis.Scripts.Managers;
+=======
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+>>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
 =======
 using System.Collections;
 using System.Collections.Generic;
@@ -25,8 +31,11 @@ namespace Mantis.Scripts.Player.States
 
             _canDetach = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             UIManager.Instance.ActivateNotification(true, UIManager.Instance.RopeSwingTxt);
+=======
+>>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
 =======
 >>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
         }
@@ -43,8 +52,11 @@ namespace Mantis.Scripts.Player.States
 
             SetPlayerRotation();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             UIManager.Instance.ActivateNotification(false, UIManager.Instance.RopeSwingTxt);
+=======
+>>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
 =======
 >>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
         }
@@ -55,7 +67,11 @@ namespace Mantis.Scripts.Player.States
             //SetPlayerPosAndRot();
             
 <<<<<<< HEAD
+<<<<<<< HEAD
             if (_player.JumpInput && _canDetach)
+=======
+            if (_player.InteractionInput && _canDetach)
+>>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f
 =======
             if (_player.InteractionInput && _canDetach)
 >>>>>>> 328966ead566e9361999c135b9ff633a7ed2515f

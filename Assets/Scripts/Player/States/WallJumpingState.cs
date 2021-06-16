@@ -6,6 +6,8 @@ namespace Mantis.Scripts.Player.States
     {
         public override void EnterState()
         {
+            _player.isVerticalStopped = false;
+
             _player.Animator.SetBool(_player.AnimParameters.isJumpingHash, true);
 
             SetWallJumpVelocity();
@@ -18,7 +20,7 @@ namespace Mantis.Scripts.Player.States
 
         public override void Update()
         {
-            CalculateJump();
+            CalculateJumpWithStop();
 
             if (PlayerIsMoving(true))
             {
@@ -30,7 +32,7 @@ namespace Mantis.Scripts.Player.States
                 SetWallJumpVelocity();
             }
 
-            if (PlayerIsFalling(_player.jumpVelocity))
+            if (PlayerIsFalling(_player.jumpVelocity) || _player.isVerticalStopped)
             {
                 _player.TransitionToState(_player.fallingState);
             }
@@ -43,6 +45,7 @@ namespace Mantis.Scripts.Player.States
             _player.jumpVelocity = Mathf.Sqrt(_player.jumpHeight * -2 * _player.fallingGravity) / 1.1f;
 
             _player.canWallJump = false;
+            _player.JumpInput = false;
         }
     }
 }
